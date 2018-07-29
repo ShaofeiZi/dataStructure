@@ -1,6 +1,6 @@
 # cmake_minimum_required(VERSION <specify CMake version here>)
-project(001)
+project(002)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(001 main.cpp)
+add_executable(002 main.cpp)
