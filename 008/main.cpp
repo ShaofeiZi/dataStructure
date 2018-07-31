@@ -3,52 +3,36 @@
 
 using namespace std;
 
-size_t iterative_Collatz(size_t n)
+template <typename T>
+bool binary_search_vector(const T& key, typename vector<T>::const_iterator data, size_t N)
 {
-	if (n < 1) {
-		return 0;
+  size_t low = 0;
+  size_t high = N;
+  while (low < high)
+  {
+    size_t mid = low + (high - low) / 2;
+	// 小则去前半部分继续查找.
+	if (key < *(data + mid)) {
+		high = mid;
 	}
-	size_t L = 1;
-	while (n != 1)
-	{
-		n = (n % 2 == 0) ? n / 2 : 3 * n + 1;
-		++L;
+	// 大则去后半部分继续查找.
+	else if (*(data + mid) < key) {
+		low = mid + 1;
 	}
-	return L;
-}
-
-size_t memoized_Collatz(vector<size_t>& v, size_t n)
-{
-	// 如果n不在向量v的下标范围之内, 先转换到合理范围之内并计算偏移D.
-	size_t D = 0;
-	while (n >= v.size())
-	{
-		n = (n % 2 == 0) ? n / 2 : 3 * n + 1;
-		++D;
+	else {
+		return true;
 	}
-	// 对v[n]进行赋值, 注意此处n在向量v的下标范围之内, 直接递归加1赋值即可.
-	if (v[n] == 0 && n > 0) {
-		v[n] = memoized_Collatz(v, (n % 2 == 0) ? n / 2 : 3 * n + 1) + 1;
-	}
-	// 返回值是原有的n对应的序列长度, 应加上偏移量D.
-	return v[n] + D;
+  }
+  return false;
 }
 
 int main()
 {
-	// 利用备忘录保存已算出的值, 适合多次求解.
-	const size_t m = 10000;
-	vector<size_t> v(m, 0);
-	v[1] = 1;
-	// 测试迭代和备忘录计算结果是否一致, 测试范围为[1, max].
-	size_t max = 100000;
-	bool equal = true;
-	for (size_t n = 1; n <= max; ++n) {
-		if (iterative_Collatz(n) != memoized_Collatz(v, n)) {
-			equal = false;
-		}
-	}
-	cout << (equal ? "equal" : "unequal") << endl;
-	system("pause");
-	return 0;
+  vector<int> v = {1, 2, 3, 4, 5};
+  cout << binary_search_vector(2, v.cbegin(), 5) << endl;
+  cout << binary_search_vector(0, v.cbegin(), 5) << endl;
+  cout << binary_search_vector(2, v.cbegin() + 2, 3) << endl;
+  cout << binary_search_vector(0, v.cbegin(), 0) << endl;
+  system("pause");
+  return 0;
 }
